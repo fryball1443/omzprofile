@@ -44,13 +44,14 @@ fi
 # PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg[blue]%}%~%{$reset_color%}"
 # if not, don't do anything
 
+# Check if the script is running on an AWS virtual machine
 if curl -s --connect-timeout 2 http://169.254.169.254/latest/meta-data/ > /dev/null; then
-    sed -i 's/PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg[blue]%}%~%{$reset_color%}"/PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) $USER@%M %{$fg[blue]%}%~%{$reset_color%}"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme
-    echo "modified zsh theme for AWS VM."
-    sed -i 's/# PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) $USER@%M %{$fg[blue]%}%~%{$reset_color%}"/PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) $USER@%M %{$fg[blue]%}%~%{$reset_color%}"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme
-    echo "modified zsh theme for AWS VM."
+  echo "This is an AWS virtual machine. Modifying zsh theme..."
+  eval "$SED_CMD 's/^PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
+  eval "$SED_CMD 's/^# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
+  echo "modified zsh theme for AWS VM."
 else
-    echo "This is not an AWS virtual machine. No changes made to show user@hostname."
+  echo "This is not an AWS virtual machine. No changes made to show user@hostname."
 fi
 
 
