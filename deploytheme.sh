@@ -19,7 +19,7 @@ fi
 # Search through .zshrc for ZSH_THEME="robbyrussell" and replace it with ZSH_THEME="fryball"
 if grep -q 'ZSH_THEME="robbyrussell"' ~/.zshrc; then
   echo "switching zsh theme to personal theme......."
-  if ! $SED_CMD 's/ZSH_THEME="robbyrussell"/ZSH_THEME="fryball"/' ~/.zshrc; then
+  if ! eval "$SED_CMD 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"fryball\"/' ~/.zshrc"; then
     echo "error: failed to update ZSH_THEME in .zshrc"
     exit 1
   fi
@@ -45,9 +45,9 @@ fi
 # if not, don't do anything
 
 if curl -s --connect-timeout 2 http://169.254.169.254/latest/meta-data/ > /dev/null; then
-    sed -i '' 's/PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg[blue]%}%~%{$reset_color%}"/PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) $USER@%M %{$fg[blue]%}%~%{$reset_color%}"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme
+    sed -i 's/PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg[blue]%}%~%{$reset_color%}"/PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) $USER@%M %{$fg[blue]%}%~%{$reset_color%}"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme
     echo "modified zsh theme for AWS VM."
-    sed -i '' 's/# PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) $USER@%M %{$fg[blue]%}%~%{$reset_color%}"/PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) $USER@%M %{$fg[blue]%}%~%{$reset_color%}"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme
+    sed -i 's/# PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) $USER@%M %{$fg[blue]%}%~%{$reset_color%}"/PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) $USER@%M %{$fg[blue]%}%~%{$reset_color%}"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme
     echo "modified zsh theme for AWS VM."
 else
     echo "This is not an AWS virtual machine. No changes made to show user@hostname."
