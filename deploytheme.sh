@@ -11,7 +11,9 @@ else
 fi
 
 # check to see if zsh is installed
-if ! command -v zsh &> /dev/null; then
+# if ! command -v zsh &> /dev/null; then
+#if /usr/bin/zsh directory does not exist, then run the following commands
+if [ ! -d "/usr/bin/zsh" ]; then
   echo "zsh is not installed."
   if [[ -f /etc/debian_version ]]; then
     echo "updating repositories..."
@@ -26,7 +28,7 @@ if ! command -v zsh &> /dev/null; then
     fi
 
     echo "Installing zsh..."
-    if ! sudo apt install -y zsh; then
+    if ! sudo apt install zsh; then
       echo "error installing zsh"
       exit 1
     fi
