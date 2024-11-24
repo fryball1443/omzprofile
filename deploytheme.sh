@@ -14,6 +14,11 @@ fi
 if ! command -v zsh &> /dev/null; then
   echo "zsh is not installed."
   if [[ -f /etc/debian_version ]]; then
+    echo "updating repositories..."
+    if ! sudo apt update && sudo apt upgrade; then
+      echo "error updating repositories"
+      exit 1
+    fi
     echo "Installing zsh..."
     if ! sudo apt update && sudo apt install -y zsh; then
       echo "error installing zsh"
