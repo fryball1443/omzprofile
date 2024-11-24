@@ -26,7 +26,7 @@ if ! command -v zsh &> /dev/null; then
     fi
 
     echo "Installing zsh..."
-    if ! sudo apt update && sudo apt install -y zsh; then
+    if ! sudo apt install -y zsh; then
       echo "error installing zsh"
       exit 1
     fi
