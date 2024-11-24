@@ -19,6 +19,12 @@ if ! command -v zsh &> /dev/null; then
       echo "error updating repositories"
       exit 1
     fi
+
+    if ! sudo apt upgrade -y; then
+      echo "error upgrading repositories"
+      exit 1
+    fi
+
     echo "Installing zsh..."
     if ! sudo apt update && sudo apt install -y zsh; then
       echo "error installing zsh"
