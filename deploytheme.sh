@@ -103,6 +103,29 @@ else
   echo "This is not an AWS virtual machine. No changes made to show user@hostname."
 fi
 
+echo "Installation complete...."
+echo "Do you want zsh or bash to be your default shell?"
+echo "type zsh or bash"
+read -r response
+if [[ "$response" == "zsh" ]]; then
+  chsh -s /usr/bin/zsh
+  echo "zsh is now your default shell."
+elif [[ "$response" == "bash" ]]; then
+  chsh -s /bin/bash
+  echo "bash is now your default shell."
+else
+  echo "Invalid response. No changes made to default shell."
+fi
+
+# if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+#   # if "exec zsh" is in .bashrc, then remove it, and add it to the end of the file
+#   if grep -q "exec zsh" ~/.bashrc; then
+#     eval "$SED_CMD '/exec zsh/d' ~/.bashrc"
+#   fi
+#   echo "exec zsh" >> ~/.bashrc
+#   source ~/.bashrc
+#   exit 0
+# fi
 
 echo "Would you like to run zsh? (y/n)"
 read -r response
