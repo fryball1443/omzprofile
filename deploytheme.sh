@@ -48,7 +48,7 @@ if [ ! -d "$HOME/.oh-my-zsh" ]; then
   #   echo "error installing Oh My Zsh"
   #   exit 1
   # fi
-    if ! sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sed 's:env zsh::g' | sed 's:chsh -s .*$::g')"; then
+  if ! sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sed 's:env zsh::g' | sed 's:chsh -s .*$::g')"; then
     echo "error installing Oh My Zsh"
     exit 1
   fi
