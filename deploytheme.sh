@@ -1,7 +1,43 @@
+#!/bin/bash
 # create a script that does the following
 # copy ./fryball.zsh-theme to ~/.oh-my-zsh/custom/themes/
 # search through .zshrc for ZSH_THEME="robbyrussell" and replace it with ZSH_THEME="fryball"
 # if ZSH_THEME="robbyrussell" is not found in .zshrc, cancel the operation and print a message to the user
+# Determine the appropriate sed command based on the operating system
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  SED_CMD='sed -i ""'
+else
+  SED_CMD='sed -i'
+fi
+
+# check to see if zsh is installed
+if ! command -v zsh &> /dev/null; then
+  echo "zsh is not installed."
+  if [[ -f /etc/debian_version ]]; then
+    echo "Installing zsh..."
+    if ! sudo apt update && sudo apt install -y zsh; then
+      echo "error installing zsh"
+      exit 1
+    fi
+
+  else
+    echo "Unsupported OS. Please install zsh manually."
+    exit 1
+  fi
+else
+  echo "zsh is already installed."
+fi
+
+# Check if ~/.oh-my-zsh directory exists
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "~/.oh-my-zsh directory does not exist. Installing Oh My Zsh..."
+  if ! sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; then
+    echo "error installing Oh My Zsh"
+    exit 1
+  fi
+else
+  echo "~/.oh-my-zsh directory already exists."
+fi
 
 # copy fryball.zsh-theme to ~/.oh-my-zsh/custom/themes/
 if ! cp ./fryball.zsh-theme ~/.oh-my-zsh/custom/themes/; then
@@ -9,12 +45,12 @@ if ! cp ./fryball.zsh-theme ~/.oh-my-zsh/custom/themes/; then
   exit 1
 fi
 
-# Determine the appropriate sed command based on the operating system
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  SED_CMD='sed -i ""'
-else
-  SED_CMD='sed -i'
-fi
+# # Determine the appropriate sed command based on the operating system
+# if [[ "$OSTYPE" == "darwin"* ]]; then
+#   SED_CMD='sed -i ""'
+# else
+#   SED_CMD='sed -i'
+# fi
 
 # Search through .zshrc for ZSH_THEME="robbyrussell" and replace it with ZSH_THEME="fryball"
 if grep -q 'ZSH_THEME="robbyrussell"' ~/.zshrc; then
