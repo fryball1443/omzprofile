@@ -44,11 +44,7 @@ fi
 # Check if ~/.oh-my-zsh directory exists
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo "~/.oh-my-zsh directory does not exist. Installing Oh My Zsh..."
-  # if ! sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"; then
-  #   echo "error installing Oh My Zsh"
-  #   exit 1
-  # fi
-  if ! sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sed 's:env zsh::g' | sed 's:chsh -s .*$::g')"; then
+  if ! sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; then
     echo "error installing Oh My Zsh"
     exit 1
   fi
