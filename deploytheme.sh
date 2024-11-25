@@ -10,6 +10,8 @@ else
   SED_CMD='sed -i'
 fi
 
+wd=$(pwd)
+
 # check to see if zsh is installed
 # if ! command -v zsh &> /dev/null; then
 #if /usr/bin/zsh directory does not exist, then run the following commands
@@ -35,7 +37,14 @@ if [ ! -d "/usr/bin/zsh" ]; then
 
   else
     echo "Unsupported OS. Please install zsh manually."
-    exit 1
+    echo "Continue anyway? Installation may not run properly. (y/n)"
+    read -r response
+    if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+      echo "Continuing installation..."
+    else
+      echo "Installation cancelled."
+      exit 1
+    fi
   fi
 else
   echo "zsh is already installed."
@@ -103,15 +112,64 @@ else
   echo "This is not an AWS virtual machine. No changes made to show user@hostname."
 fi
 
+# check if the script is running on wsl2
+# if so, ask "would you like to set default WSL theme so it is magenta instead of cyan?"
+# if yes, replace every instance of the word "cyan" with "magenta" in ~/.oh-my-zsh/custom/themes/fryball.zsh-theme
+# if no, don't do anything
+
+# Check if the script is running on WSL2
+if [ -d "/home/unix" ]; then
+  echo "This is WSL2. Modifying zsh theme..."
+  echo "Would you like to set default WSL theme so it is magenta instead of cyan? (y/n)"
+  read -r response
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    eval "$SED_CMD 's/cyan/magenta/g' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
+    echo "modified zsh theme for WSL2."
+  else
+    echo "No changes made to zsh theme."
+  fi
+else
+  echo "This is not WSL2. No changes made to zsh theme."
+fi
+
+
 echo "Installation complete...."
 echo "Do you want zsh or bash to be your default shell?"
 echo "type zsh or bash"
 read -r response
 if [[ "$response" == "zsh" ]]; then
-  chsh -s /usr/bin/zsh
+  if ! chsh -s /usr/bin/zsh; then
+    echo "error changing default shell to zsh"
+    echo "attempting change via appending to ~/.bashrc"
+    # if "exec zsh" is in .bashrc, then remove it, and add it to the end of the file
+    if grep -q "exec zsh" ~/.bashrc; then
+      eval "$SED_CMD '/exec zsh/d' ~/.bashrc"
+    fi
+    # append the following command and assign it to alias bash to the .zshrc file
+    # current working directory/rm_autozsh_bashrc.sh
+    if [ -f "$wd/rm_autozsh_bashrc.sh" ]; then
+      echo "" >> ~/.zshrc
+      echo "" >> ~/.zshrc
+      echo "alias bash='bash $wd/rm_autozsh_bashrc.sh'" >> ~/.zshrc
+      # echo "alias bash='sed -i \"/alias bash=/d\" ~/.zshrc && bash $wd/rm_autozsh_bashrc.sh'" >> ~/.zshrc
+      # echo "bash -c 'sed -i \"/alias bash=/d\" ~/.zshrc && bash $wd/rm_autozsh_bashrc.sh'" >> ~/.zshrc
+      echo "alias bash added to ~/.zshrc"
+    fi
+    echo "exec zsh" >> ~/.bashrc
+    source ~/.bashrc
+    exit 0
+  fi
   echo "zsh is now your default shell."
 elif [[ "$response" == "bash" ]]; then
-  chsh -s /bin/bash
+  if ! chsh -s /bin/bash; then
+    echo "error changing default shell to bash"
+    echo "attempting change via removing 'exec zsh' from ~/.bashrc"
+    # if "exec zsh" is in .bashrc, then remove it
+    if grep -q "exec zsh" ~/.bashrc; then
+      eval "$SED_CMD '/exec zsh/d' ~/.bashrc"
+    fi
+    source ~/.bashrc
+  fi
   echo "bash is now your default shell."
 else
   echo "Invalid response. No changes made to default shell."
