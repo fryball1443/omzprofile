@@ -16,54 +16,54 @@ wd=$(pwd)
 # if ! command -v zsh &> /dev/null; then
 #if /usr/bin/zsh directory does not exist, then run the following commands
 if [ ! -d "/usr/bin/zsh" ]; then
-  echo "zsh is not installed."
+  echo "    zsh is not installed."
   if [[ -f /etc/debian_version ]]; then
-    echo "updating repositories..."
+    echo "    updating repositories..."
     if ! sudo apt update && sudo apt upgrade; then
-      echo "error updating repositories"
+      echo "    error updating repositories"
       exit 1
     fi
 
     if ! sudo apt upgrade -y; then
-      echo "error upgrading repositories"
+      echo "    error upgrading repositories"
       exit 1
     fi
 
-    echo "Installing zsh..."
+    echo "    Installing zsh..."
     if ! sudo apt install zsh; then
-      echo "error installing zsh"
+      echo "    error installing zsh"
       exit 1
     fi
 
   else
-    echo "Unsupported OS. Please install zsh manually."
-    echo "Continue anyway? Installation may not run properly. (y/n)"
+    echo "    Unsupported OS. Please install zsh manually."
+    echo "    Continue anyway? Installation may not run properly. (y/n)"
     read -r response
     if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-      echo "Continuing installation..."
+      echo "    Continuing installation..."
     else
-      echo "Installation cancelled."
+      echo "    Installation cancelled."
       exit 1
     fi
   fi
 else
-  echo "zsh is already installed."
+  echo "    zsh is already installed."
 fi
 
 # Check if ~/.oh-my-zsh directory exists
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
-  echo "~/.oh-my-zsh directory does not exist. Installing Oh My Zsh..."
+  echo "    ~/.oh-my-zsh directory does not exist. Installing Oh My Zsh..."
   if ! sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; then
-    echo "error installing Oh My Zsh"
+    echo "    error installing Oh My Zsh"
     exit 1
   fi
 else
-  echo "~/.oh-my-zsh directory already exists."
+  echo "    ~/.oh-my-zsh directory already exists."
 fi
 
 # copy fryball.zsh-theme to ~/.oh-my-zsh/custom/themes/
 if ! cp ./fryball.zsh-theme ~/.oh-my-zsh/custom/themes/; then
-  echo "error: failed to copy fryball.zsh-theme to ~/.oh-my-zsh/custom/themes/"
+  echo "    error: failed to copy fryball.zsh-theme to ~/.oh-my-zsh/custom/themes/"
   exit 1
 fi
 
@@ -76,17 +76,17 @@ fi
 
 # Search through .zshrc for ZSH_THEME="robbyrussell" and replace it with ZSH_THEME="fryball"
 if grep -q 'ZSH_THEME="robbyrussell"' ~/.zshrc; then
-  echo "switching zsh theme to personal theme......."
+  echo "    switching zsh theme to personal theme......."
   if ! eval "$SED_CMD 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"fryball\"/' ~/.zshrc"; then
-    echo "error: failed to update ZSH_THEME in .zshrc"
+    echo "    error: failed to update ZSH_THEME in .zshrc"
     exit 1
   fi
-  echo "successfully updated ZSH_THEME in .zshrc"
+  echo "    successfully updated ZSH_THEME in .zshrc"
 elif grep -q 'ZSH_THEME="fryball"' ~/.zshrc; then
-  echo 'ZSH_THEME="fryball" already set in .zshrc'
-  echo 'no changes made to .zshrc'
+  echo '    ZSH_THEME="fryball" already set in .zshrc'
+  echo '    no changes made to .zshrc'
 else
-  echo 'ZSH_THEME="robbyrussell" not found in .zshrc'
+  echo '    ZSH_THEME="robbyrussell" not found in .zshrc'
   exit 1
 fi
 
@@ -102,14 +102,22 @@ fi
 # PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg[blue]%}%~%{$reset_color%}"
 # if not, don't do anything
 
-# Check if the script is running on an AWS virtual machine
+# Check if the script is running on an AWS virtual machine. if so, prompt to modify zsh theme to show user@hostname
 if curl -s --connect-timeout 2 http://169.254.169.254/latest/meta-data/ > /dev/null; then
-  echo "This is an AWS virtual machine. Modifying zsh theme..."
+  echo "    This is an AWS virtual machine. Modifying zsh theme..."
   eval "$SED_CMD 's/^PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
   eval "$SED_CMD 's/^# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
-  echo "modified zsh theme for AWS VM."
+  echo "    modified zsh theme for AWS VM."
 else
-  echo "This is not an AWS virtual machine. No changes made to show user@hostname."
+  echo "    This is not an AWS virtual machine. Would  to show user@hostname? (y/n)"
+  read -r response
+  if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    eval "$SED_CMD 's/^PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
+    eval "$SED_CMD 's/^# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
+    echo "    modified zsh theme to show user@hostname."
+  else
+    echo "    reverting to default zsh theme."
+  fi
 fi
 
 # check if the script is running on wsl2
@@ -119,28 +127,28 @@ fi
 
 # Check if the script is running on WSL2
 if [ -d "/home/unix" ]; then
-  echo "This is WSL2. Modifying zsh theme..."
-  echo "Would you like to set default WSL theme so it is magenta instead of cyan? (y/n)"
+  echo "    This is WSL2. Modifying zsh theme..."
+  echo "   Would you like to set default WSL theme so it is magenta instead of cyan? (y/n)"
   read -r response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
     eval "$SED_CMD 's/cyan/magenta/g' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
-    echo "modified zsh theme for WSL2."
+    echo "    modified zsh theme for WSL2."
   else
-    echo "No changes made to zsh theme."
+    echo "    No changes made to zsh theme."
   fi
 else
-  echo "This is not WSL2. No changes made to zsh theme."
+  echo "    This is not WSL2. No changes made to zsh theme."
 fi
 
 
-echo "Installation complete...."
-echo "Do you want zsh or bash to be your default shell?"
-echo "type zsh or bash"
+echo "    Installation complete...."
+echo "   Do you want zsh or bash to be your default shell?"
+echo "    type zsh or bash"
 read -r response
 if [[ "$response" == "zsh" ]]; then
   if ! chsh -s /usr/bin/zsh; then
-    echo "error changing default shell to zsh"
-    echo "attempting change via appending to ~/.bashrc"
+    echo "    error changing default shell to zsh"
+    echo "    attempting change via appending to ~/.bashrc"
     # if "exec zsh" is in .bashrc, then remove it, and add it to the end of the file
     if grep -q "exec zsh" ~/.bashrc; then
       eval "$SED_CMD '/exec zsh/d' ~/.bashrc"
@@ -150,29 +158,31 @@ if [[ "$response" == "zsh" ]]; then
     if [ -f "$wd/rm_autozsh_bashrc.sh" ]; then
       echo "" >> ~/.zshrc
       echo "" >> ~/.zshrc
-      echo "alias bash='bash $wd/rm_autozsh_bashrc.sh'" >> ~/.zshrc
+      echo "    alias bash='bash $wd/rm_autozsh_bashrc.sh'" >> ~/.zshrc
       # echo "alias bash='sed -i \"/alias bash=/d\" ~/.zshrc && bash $wd/rm_autozsh_bashrc.sh'" >> ~/.zshrc
       # echo "bash -c 'sed -i \"/alias bash=/d\" ~/.zshrc && bash $wd/rm_autozsh_bashrc.sh'" >> ~/.zshrc
-      echo "alias bash added to ~/.zshrc"
+      echo "    alias bash added to ~/.zshrc"
     fi
+    echo "" >> ~/.bashrc
+    echo "" >> ~/.bashrc
     echo "exec zsh" >> ~/.bashrc
     source ~/.bashrc
     exit 0
   fi
-  echo "zsh is now your default shell."
+  echo "    zsh is now your default shell."
 elif [[ "$response" == "bash" ]]; then
   if ! chsh -s /bin/bash; then
-    echo "error changing default shell to bash"
-    echo "attempting change via removing 'exec zsh' from ~/.bashrc"
+    echo "    error changing default shell to bash"
+    echo "    attempting change via removing 'exec zsh' from ~/.bashrc"
     # if "exec zsh" is in .bashrc, then remove it
     if grep -q "exec zsh" ~/.bashrc; then
       eval "$SED_CMD '/exec zsh/d' ~/.bashrc"
     fi
     source ~/.bashrc
   fi
-  echo "bash is now your default shell."
+  echo "    bash is now your default shell."
 else
-  echo "Invalid response. No changes made to default shell."
+  echo "    Invalid response. No changes made to default shell."
 fi
 
 # if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
@@ -185,7 +195,7 @@ fi
 #   exit 0
 # fi
 
-echo "Would you like to run zsh? (y/n)"
+echo "    Would you like to run zsh? (y/n)"
 read -r response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
   zsh
