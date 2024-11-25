@@ -15,6 +15,8 @@ wd=$(pwd)
 # check to see if zsh is installed
 # if ! command -v zsh &> /dev/null; then
 #if /usr/bin/zsh directory does not exist, then run the following commands
+echo ""
+echo ""
 if [ ! -d "/usr/bin/zsh" ]; then
   echo "    zsh is not installed."
   if [[ -f /etc/debian_version ]]; then
@@ -29,6 +31,8 @@ if [ ! -d "/usr/bin/zsh" ]; then
       exit 1
     fi
 
+    echo ""
+    echo ""
     echo "    Installing zsh..."
     if ! sudo apt install zsh; then
       echo "    error installing zsh"
@@ -50,21 +54,29 @@ else
   echo "    zsh is already installed."
 fi
 
+echo ""
+echo ""
 # Check if ~/.oh-my-zsh directory exists
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   echo "    ~/.oh-my-zsh directory does not exist. Installing Oh My Zsh..."
   if ! sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended; then
     echo "    error installing Oh My Zsh"
     exit 1
+  else
+    echo "    Oh My Zsh installed successfully."
   fi
 else
   echo "    ~/.oh-my-zsh directory already exists."
 fi
 
+echo ""
+echo ""
 # copy fryball.zsh-theme to ~/.oh-my-zsh/custom/themes/
 if ! cp ./fryball.zsh-theme ~/.oh-my-zsh/custom/themes/; then
   echo "    error: failed to copy fryball.zsh-theme to ~/.oh-my-zsh/custom/themes/"
   exit 1
+else
+  echo "    fryball.zsh-theme copied to ~/.oh-my-zsh/custom/themes/"
 fi
 
 # # Determine the appropriate sed command based on the operating system
@@ -74,14 +86,17 @@ fi
 #   SED_CMD='sed -i'
 # fi
 
+echo ""
+echo ""
 # Search through .zshrc for ZSH_THEME="robbyrussell" and replace it with ZSH_THEME="fryball"
 if grep -q 'ZSH_THEME="robbyrussell"' ~/.zshrc; then
   echo "    switching zsh theme to personal theme......."
   if ! eval "$SED_CMD 's/ZSH_THEME=\"robbyrussell\"/ZSH_THEME=\"fryball\"/' ~/.zshrc"; then
     echo "    error: failed to update ZSH_THEME in .zshrc"
     exit 1
+  else
+    echo "    successfully updated ZSH_THEME in .zshrc"
   fi
-  echo "    successfully updated ZSH_THEME in .zshrc"
 elif grep -q 'ZSH_THEME="fryball"' ~/.zshrc; then
   echo '    ZSH_THEME="fryball" already set in .zshrc'
   echo '    no changes made to .zshrc'
@@ -109,7 +124,7 @@ if curl -s --connect-timeout 2 http://169.254.169.254/latest/meta-data/ > /dev/n
   eval "$SED_CMD 's/^# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
   echo "    modified zsh theme for AWS VM."
 else
-  echo "    This is not an AWS virtual machine. Would  to show user@hostname? (y/n)"
+  echo "    This is not an AWS virtual machine. Would you like to show user@hostname? (y/n)"
   read -r response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
     eval "$SED_CMD 's/^PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
@@ -140,7 +155,10 @@ else
   echo "    This is not WSL2. No changes made to zsh theme."
 fi
 
-
+echo ""
+echo ""
+echo ""
+echo ""
 echo "    Installation complete...."
 echo "   Do you want zsh or bash to be your default shell?"
 echo "    type zsh or bash"
@@ -194,7 +212,8 @@ fi
 #   source ~/.bashrc
 #   exit 0
 # fi
-
+echo ""
+echo ""
 echo "    Would you like to run zsh? (y/n)"
 read -r response
 if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
