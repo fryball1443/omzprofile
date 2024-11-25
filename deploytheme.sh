@@ -116,19 +116,20 @@ fi
 # and comment out the following line
 # PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg[blue]%}%~%{$reset_color%}"
 # if not, don't do anything
+# \$USER@%M
 
 # Check if the script is running on an AWS virtual machine. if so, prompt to modify zsh theme to show user@hostname
 if curl -s --connect-timeout 2 http://169.254.169.254/latest/meta-data/ > /dev/null; then
   echo "    This is an AWS virtual machine. Modifying zsh theme..."
   eval "$SED_CMD 's/^PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
-  eval "$SED_CMD 's/^# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
+  eval "$SED_CMD 's/^# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg_bold\[green\]%} \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg_bold\[green\]%} \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
   echo "    modified zsh theme for AWS VM."
 else
   echo "    This is not an AWS virtual machine. Would you like to show user@hostname? (y/n)"
   read -r response
   if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
     eval "$SED_CMD 's/^PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
-    eval "$SED_CMD 's/^# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
+    eval "$SED_CMD 's/^# PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg_bold\[green\]%} \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/PROMPT=\"%(?:%{\$fg_bold\[green\]%}➜ :%{\$fg_bold\[red\]%}➜ ) %{\$fg_bold\[green\]%} \$USER@%M %{\$fg\[blue\]%}%~%{\$reset_color%}\"/' ~/.oh-my-zsh/custom/themes/fryball.zsh-theme"
     echo "    modified zsh theme to show user@hostname."
   else
     echo "    reverting to default zsh theme."

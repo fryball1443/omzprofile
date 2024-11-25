@@ -5,7 +5,7 @@
 # PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg_bold[green]%}$USER@hubble %{$fg[blue]%}%~%{$reset_color%}" #admin@hubble display
 
 #user@hostname
-# PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) $USER@%M %{$fg[blue]%}%~%{$reset_color%}" #admin@hubble display
+# PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg_bold[green]%} $USER@%M %{$fg[blue]%}%~%{$reset_color%}" #admin@hubble display
 
 # default
 PROMPT="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ ) %{$fg[blue]%}%~%{$reset_color%}"
